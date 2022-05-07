@@ -23,8 +23,16 @@ refs.form.addEventListener('input', throttle(onTextareaInput, 500));
 // - очищення форми
 // - очищення локального сховища
 // - виводить в консоль поточні значення
+// - Alert
 function onFormSubmit(e) {
   e.preventDefault();
+
+  if (refs.email.value === '') {
+    return alert('Поле email потрібно заповнити');
+  } else if (refs.message.value === '') {
+    return alert('Поле message потрібно заповнити');
+  }
+
   e.currentTarget.reset();
   localStorage.removeItem(FEEDBACK_FORM_KEY);
 
@@ -33,7 +41,8 @@ function onFormSubmit(e) {
 
 // Функція запису у локальне сховище + Перевірка
 function onTextareaInput(e) {
-  dataForm[e.target.name] = e.target.value;
+  dataForm.email = e.currentTarget.email.value;
+  dataForm.message = e.currentTarget.message.value;
 
   const saveData = () => {
     try {
@@ -47,9 +56,11 @@ function onTextareaInput(e) {
 }
 
 // Функція отримання запису з локального сховища + Перевірка
-function loadData() {
+const loadData = () => {
   try {
     const getForm = JSON.parse(localStorage.getItem(FEEDBACK_FORM_KEY));
+
+    console.log(getForm);
     if (getForm) {
       refs.email.value = getForm.email;
       refs.message.value = getForm.message;
@@ -57,8 +68,6 @@ function loadData() {
   } catch (error) {
     console.log(error.message);
   }
-
-  return;
-}
+};
 
 loadData();
