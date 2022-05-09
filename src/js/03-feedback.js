@@ -8,11 +8,13 @@ const refs = {
   message: document.querySelector('[name="message"]'),
 };
 
-// Об'єкт сховища
-const dataForm = {};
-
 // Ключ для локального сховища
 const FEEDBACK_FORM_KEY = 'feedback-form-state';
+
+// Об'єкт сховища
+const dataForm = localStorage.getItem(FEEDBACK_FORM_KEY)
+  ? JSON.parse(localStorage.getItem(FEEDBACK_FORM_KEY))
+  : {};
 
 // Вішання слухачів
 refs.form.addEventListener('submit', onFormSubmit);
@@ -41,8 +43,10 @@ function onFormSubmit(e) {
 
 // Функція запису у локальне сховище + Перевірка
 function onTextareaInput(e) {
-  dataForm.email = e.currentTarget.email.value;
-  dataForm.message = e.currentTarget.message.value;
+  dataForm[e.target.name] = e.target.value;
+
+  // dataForm.email = e.currentTarget.email.value;
+  // dataForm.message = e.currentTarget.message.value;
 
   const saveData = () => {
     try {
@@ -62,8 +66,12 @@ const loadData = () => {
 
     console.log(getForm);
     if (getForm) {
-      refs.email.value = getForm.email;
-      refs.message.value = getForm.message;
+      if (getForm.email) {
+        refs.email.value = getForm.email;
+      }
+      if (getForm.message) {
+        refs.message.value = getForm.message;
+      }
     }
   } catch (error) {
     console.log(error.message);
